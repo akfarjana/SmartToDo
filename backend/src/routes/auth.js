@@ -5,6 +5,51 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 
+// Signup endpoint
+router.post('/signup', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+
+    if (!email || !password || !name) {
+      return res.status(400).json({ message: 'Email, password, and name are required' });
+    }
+
+    await db.read();
+    
+    // Check if user already exists
+    if (db.data.users.some(u => u.email === email)) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const newUser = {
+      id: uuidv4(),
+      email,
+      passwordHash: hashedPassword,
+      role: 'user',
+      profile: {
+        name,
+        theme: 'light'
+      },
+      lastLogin: new Date().toISOString()
+    };
+
+    db.data.users.push(newUser);
+    await db.write();
+
+    res.status(201).json({ 
+      message: 'User registered successfully',
+      userId: newUser.id
+    });
+  } catch (err) {
+    console.error('Registration error:', err);
+    res.status(500).json({ message: 'Error during registration' });
+  }
+});
+
 // Login endpoint
 router.post('/login', async (req, res) => {
   try {
@@ -45,6 +90,34 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ message: 'Error during login' });
+  }
+});
+
+// Reset password request
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    await db.read();
+    const user = db.data.users.find(u => u.email === email);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // In a real application, you would:
+    // 1. Generate a reset token
+    // 2. Save it to the database with an expiration
+    // 3. Send an email with the reset link
+    // For now, we'll just return a success message
+    res.json({ message: 'Password reset link sent to email' });
+  } catch (err) {
+    console.error('Password reset error:', err);
+    res.status(500).json({ message: 'Error processing password reset' });
   }
 });
 
