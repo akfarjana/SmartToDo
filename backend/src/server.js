@@ -6,6 +6,9 @@ require('dotenv').config();
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const taskRoutes = require('./routes/tasks');
+const adminRoutes = require('./routes/admin');
 
 // Initialize express app
 const app = express();
@@ -28,6 +31,9 @@ app.get('/health', (req, res) => {
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/tasks', taskRoutes);
+app.use('/admin', adminRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
