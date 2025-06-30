@@ -6,6 +6,21 @@ This document outlines the RESTful API endpoints for the SmartToDo application b
 
 The base URL for all API endpoints is not specified in the PRD, but typically would be something like `http://localhost:3000/api/v1` or similar.
 
+## System Endpoints
+
+* `GET /health`
+    * **Description:** Check the health status of the API server
+    * **Authentication:** None required
+    * **Response Body Example (Success):**
+        ```json
+        {
+            "status": "ok",
+            "timestamp": "2024-03-21T10:30:45.123Z",
+            "uptime": 3600,
+            "message": "SmartToDo API is running"
+        }
+        ```
+
 ## Authentication
 
 Authentication is JWT-based. Users must log in to receive a JWT token, which should then be included in the `Authorization` header of subsequent requests (e.g., `Bearer <token>`).
