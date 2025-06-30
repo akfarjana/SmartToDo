@@ -1,0 +1,11 @@
+{
+  "ignore": [
+    "src/db/db.json",
+    "*.test.js",
+    "node_modules/**/node_modules",
+    ".git"
+  ],
+  "watch": ["src/"],
+  "ext": "js,json",
+  "delay": "2"
+} 
