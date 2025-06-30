@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
 
+// Import routes
+const authRoutes = require('./routes/auth');
+
 // Initialize express app
 const app = express();
 
@@ -22,6 +25,9 @@ app.get('/health', (req, res) => {
     message: 'SmartToDo API is running'
   });
 });
+
+// Routes
+app.use('/auth', authRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
