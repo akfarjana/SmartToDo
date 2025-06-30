@@ -2,22 +2,29 @@ const { Low } = require('lowdb');
 const { JSONFile } = require('lowdb/node');
 const path = require('path');
 
+// Default data structure
+const defaultData = {
+  users: [],
+  tasks: []
+};
+
 // Create database instance
 const dbFile = path.join(__dirname, 'db.json');
 const adapter = new JSONFile(dbFile);
-const db = new Low(adapter);
+const db = new Low(adapter, defaultData); // Pass default data here
 
-// Initialize with default data
+// Initialize database
 const initializeDb = async () => {
-  const defaultData = {
-    users: [],
-    tasks: []
-  };
-
-  // Load existing data or set defaults
-  await db.read();
-  db.data ||= defaultData;
-  await db.write();
+  try {
+    await db.read();
+    // If db.data is null (file doesn't exist), it will use defaultData
+    db.data ||= defaultData;
+    await db.write();
+  } catch (err) {
+    console.error('Database initialization error:', err);
+    // Ensure we have data even if read fails
+    db.data = defaultData;
+  }
 };
 
 // Initialize database

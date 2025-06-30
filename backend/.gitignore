@@ -6,6 +6,9 @@
 # Dependencies
 node_modules/
 
+# Database
+src/db/db.json
+
 # Logs
 logs/
 *.log
